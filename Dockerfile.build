@@ -1,0 +1,13 @@
+FROM ubuntu:18.04
+
+RUN apt update && \
+    apt install -y wget sudo curl lsb-release autoconf libtool pkg-config libjansson-dev git
+
+RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | sudo apt-key add - && \
+    echo "deb [arch=amd64] https://packages.irods.org/apt/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/renci-irods.list && \
+    sudo apt-get update && \
+    apt install -y irods-dev irods-runtime
+
+ADD build_and_copy_packages_to_dir.sh /
+RUN chmod u+x /build_and_copy_packages_to_dir.sh
+ENTRYPOINT ["./build_and_copy_packages_to_dir.sh"]
